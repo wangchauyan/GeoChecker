@@ -2,6 +2,7 @@ package idv.chauyan.Xploit.geochecker;
 
 import android.os.AsyncTask;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -13,6 +14,9 @@ import java.util.ArrayList;
  * Created by ChauyanWang on 7/10/14.
  */
 public class LocationParser {
+
+    private double lat;
+    private double lng;
 
     public class address_components {
         public String long_name;
@@ -65,6 +69,13 @@ public class LocationParser {
         public String status;
     }
 
+    private resultGroup results;
+
+    public LocationParser(LatLng latlng) {
+        lat = latlng.latitude;
+        lng = latlng.longitude;
+    }
+
     public void doParse() {
         new parseTask().execute();
     }
@@ -75,12 +86,11 @@ public class LocationParser {
 
             try {
                 URL url = new URL(
-                        "http://maps.googleapis.com/maps/api/geocode/json?latlng=25.2,121.2&sensor=true");
+                        "http://maps.googleapis.com/maps/api/geocode/json?latlng=" + lat + ","
+                                + lng + "&sensor=true");
                 final Gson gson = new GsonBuilder().create();
-                resultGroup results = gson.fromJson(
+                results = gson.fromJson(
                         new InputStreamReader(url.openStream()), resultGroup.class);
-
-                System.out.println("status : " + results.status);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -90,6 +100,10 @@ public class LocationParser {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            /**
+             * here you could use results to do anything.
+             */
         }
     }
 }
